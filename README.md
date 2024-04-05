@@ -9,7 +9,13 @@ Original code for vanillia EPOS from [EPOS: Estimating 6D Pose of Objects with S
 git clone --recursive https://github.com/pansap99/epos-opt.git
 ```
 
-### 2. Build progressive-x
+### 2. Set up conda environment
+
+```
+conda env create -f environment.yml
+```
+
+### 3. Build progressive-x
 
 ```
 cd ./external/progressive-x
@@ -18,14 +24,14 @@ cmake .. -DCMAKE_BUILD_TYPE=Release
 make -j8
 ```
 
-### 3. Install visualization package (Optional)
+### 4. Install visualization package (Optional)
 
 Download the pose-vis wheel file from [here](https://ntuagr-my.sharepoint.com/:f:/g/personal/psapoutzoglou_ntua_gr/EoR2e85O8xpDnRlNf9IFOb0B1N5fc_fjAgRqKB4v_KVEYA?e=7cqhW9) and install it:
 ```
 pip install pose_vis-1.0-py3-none-any.whl
 ```
 
-### 3. Setup environment variables
+### 5. Setup environment variables
 
 Create file ```~/anaconda3/envs/lala/etc/conda/activate.d/env_vars.sh``` with the following content:
 
@@ -48,7 +54,7 @@ export PYTHONPATH=$REPO_PATH/external/slim:$PYTHONPATH
 export LD_LIBRARY_PATH=$REPO_PATH/external/llvm/lib:$LD_LIBRARY_PATH
 ```
 
-### 4. Download and setup the directories
+### 6. Download and setup the directories
 
 - Download models from this [folder](https://ntuagr-my.sharepoint.com/:f:/g/personal/psapoutzoglou_ntua_gr/EnRqn_GBhJpKj_DOiuSLYlMBqtT8M2_HYY2hDAvcyyYdng?e=3wRcPN) and place them under the ```$STORE_PATH``` directory
 - Donwload any dataset from the ```datasets``` [folder](https://ntuagr-my.sharepoint.com/:f:/g/personal/psapoutzoglou_ntua_gr/ElH4q1jy60pApZIKXSS33PYBO34GMvJOVg_x81g58ZzPbA?e=f3G6TX) and place it under ```$BOP_PATH$``` directory.

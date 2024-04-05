@@ -1,4 +1,4 @@
-name: lala
+name: eposOpt
 channels:
   - conda-forge
   - defaults
@@ -67,4 +67,4 @@ dependencies:
       - typing-extensions==4.11.0
       - tzdata==2024.1
       - zipp==3.18.1
-prefix: /home/panos/anaconda3/envs/lala
+prefix: /home/panos/anaconda3/envs/eposOpt
