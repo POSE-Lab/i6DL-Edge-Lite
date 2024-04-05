@@ -11,6 +11,7 @@ import sys
 sys.path.append("..")
 from utilsHF import *
 import os
+from rich.progress import Progress
 
 def renderPose(vertices,
                indices,
@@ -69,9 +70,9 @@ def renderPose(vertices,
     if not rgb_image:
         mask = renderer.CaptureFramebufferScene(jn(savePath),saveRendered=True)
     else:
-        mask = renderer.CaptureFramebufferScene(jn(savePath,'test.png'),saveRendered=False)
+        mask = renderer.CaptureFramebufferScene(jn(savePath,'test.png'),saveRendered=True)
         renderer.draw2DBoundingBox(cv.imread(rgb_image).astype(np.float32),
-                                   mask,
+                                   mask.astype(np.float32),
                                    str(objID),
                                    conf=conf,
                                    savePath=savePath,
@@ -113,30 +114,34 @@ def main(args):
                           config["vis_fragment_shader"],
                           config["vis_geometry_shader"])
     renderer.create_data_buffers(vertices,indices,attrs=[2,3,4])
-    renderer.CreateFramebuffer(GL_RGB32F,GL_RGBA,GL_np.float32)
+    renderer.CreateFramebuffer(GL_RGB32F,GL_RGBA,GL_FLOAT)
 
 
-    for img in images:
-        renderer.glConfig()
-        key = str(int(os.path.basename(img).split('.')[0]))
-        R = np.array(poses[key][0]['cam_R_m2c']).reshape(3,3)
-        T = np.array(poses[key][0]['cam_t_m2c']).reshape(3,)
+    with Progress() as progress:
+        vis_task = progress.add_task("[red]Rendering...", total=len(images))
+        for img in images:
+        
+            renderer.glConfig()
+            key = str(int(os.path.basename(img).split('.')[0]))
+            R = np.array(poses[key][0]['cam_R_m2c']).reshape(3,3)
+            T = np.array(poses[key][0]['cam_t_m2c']).reshape(3,)
 
-        RT = np.eye(4)
-        RT[:3,:3] = R
-        RT[:3,-1] = T
+            RT = np.eye(4)
+            RT[:3,:3] = R
+            RT[:3,-1] = T
 
-        renderPose(vertices.reshape(-1,3),
-                   indices,
-                   renderer,
-                   objID=FLAGS.objID,
-                   conf=confs[confs[:,0].astype(int) == int(key)][0,1],
-                   resolution=(resolution[1],resolution[0]),
-                   RT= RT,
-                   K = np.array(config["K"]).reshape(3,3),
-                   savePath= jn(config["vis_savePath"],os.path.basename(img)),
-                   rgb_image=img
-                   )
+            renderPose(vertices.reshape(-1,3),
+                    indices,
+                    renderer,
+                    objID=FLAGS.objID,
+                    conf=confs[confs[:,0].astype(int) == int(key)][0,1],
+                    resolution=(resolution[1],resolution[0]),
+                    RT= RT,
+                    K = np.array(config["K"]).reshape(3,3),
+                    savePath= jn(config["vis_savePath"],os.path.basename(img)),
+                    rgb_image=img
+                    )
+            progress.update(vis_task, advance=1)
 
 if __name__ == "__main__":
     app.run(main)

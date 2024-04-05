@@ -1,10 +1,10 @@
 
 input_tensor_name: "rgb_image_input:0"
 method: 'onnx'
-onnx: "../../../trained_models/crf123AndLab123MI3_640.onnx"
+onnx: "../../store/crf12345AndLab123MI3_640/crf12345AndLab123MI3_640.onnx"
 warmup: True
-init_image_path: "../../../init_images/init_640.png"
-model3D_path: "../../../3d_models/obj_000001.ply"
+init_image_path: "../../datasets/carObj1/test_primesense/000001/rgb/000008.png"
+model3D_path: "../../datasets/carObj1/models_cad/obj_000001.ply"
 K: [423.873027, 0.000000, 318.680359, 0.000000, 423.074667, 242.974976, 0.000000, 0.000000, 1.000000]
 
 # EPOS related flags
@@ -34,7 +34,7 @@ max_instances_to_fit: 2
 max_fitting_iterations: 400
 
 # save options
-corr_path: "./"
+corr_path: "../"
 
 
 # eval options

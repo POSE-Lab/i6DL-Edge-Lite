@@ -27,7 +27,7 @@ def main(args):
     if epos_model.warm_up:
         CONSOLE.log("[bold yellow]Warmin up...")
         epos_model.warm_up(epos_model.input_tensor_name,10)
-        CONSOLE.log(":white_check_mark::check: [bold white]Done warmup")
+        CONSOLE.log(":white_check_mark: [bold green]Done warmup")
 
     CONSOLE.log("Starting inference...")
 

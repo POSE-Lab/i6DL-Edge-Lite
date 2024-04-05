@@ -4,7 +4,7 @@ import imageio
 from PIL import Image as ImagePIL
 import pandas as pd
 from profiler import Profiler
-from utilsHF import vis_object_confs
+from utilsHF import vis_object_confs,create_directory
 
 def create_multiple_columns(dataframe,values, column_names, logic_function):
     for column_name in column_names:
@@ -134,8 +134,9 @@ def save_corr_csv(model_store,frag_coords,inlier_indices,obj_confs,frag_confs,lo
 
     
     corr_path = os.path.join(
-        path, 'corr{}'.format('_'),str(imgID)+"_corr")
-    df.to_csv(corr_path)
+        path, 'corr{}'.format('_'))
+    create_directory(corr_path)
+    df.to_csv(os.path.join(corr_path,str(imgID)+"_corr.txt"))
 
     #return fconfs
 

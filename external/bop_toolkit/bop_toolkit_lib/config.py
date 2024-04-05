@@ -12,6 +12,7 @@ import os
 if 'BOP_PATH' in os.environ:
   datasets_path = os.environ['BOP_PATH']
 else:
+  print("ha")
   datasets_path = r'/home/panos/code/epos/datasets'#'/home/panos/code/SPREADER_DATASET'
 
 # Folder with pose results to be evaluated.
