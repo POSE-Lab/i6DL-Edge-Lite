@@ -1,0 +1,51 @@
+
+input_tensor_name: "rgb_image_input:0"
+method: 'onnx'
+onnx: "../../../trained_models/crf123AndLab123MI3_640.onnx"
+warmup: True
+init_image_path: "../../../init_images/init_640.png"
+model3D_path: "../../../3d_models/obj_000001.ply"
+K: [423.873027, 0.000000, 318.680359, 0.000000, 423.074667, 242.974976, 0.000000, 0.000000, 1.000000]
+
+# EPOS related flags
+dataset: "carObj1"
+task_type: 'localization'
+decoder_output_stride: [4]
+num_frags: 64
+corr_min_obj_conf: 0.1
+corr_min_frag_rel_conf: 0.5
+project_to_surface: false
+
+# Pose fitting parameters
+fitting_method: 'progressive_x'
+inlier_thresh: 4.0
+neighbour_max_dist: 20.0
+min_hypothesis_quality: 0.5
+required_progx_confidence: 1.0
+required_ransac_confidence: 1.0
+min_triangle_area: 0.0
+use_prosac: false
+max_model_number_for_pearl: 5
+spatial_coherence_weight: 0.1
+scaling_from_millimeters: 0.1
+max_tanimoto_similarity: 0.9
+max_correspondences: None
+max_instances_to_fit: 2
+max_fitting_iterations: 400
+
+# save options
+corr_path: "./"
+
+
+# eval options
+eval_path: "./eval"
+metrics: ["add"]
+
+# visualiazation options
+vis_vertex_shader: "./shaders/basic_lighting_vrt.txt"
+vis_fragment_shader: "./shaders/basic_lighting.txt"
+vis_geometry_shader: null
+vis_savePath: "./vis_results"
+vis_render_opacity: 0.7
+
+
