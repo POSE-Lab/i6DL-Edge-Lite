@@ -4,3 +4,4 @@ scripts/vis_results/
 scripts/eval/
 corr_/
 store
+scripts/config_mine.yml
