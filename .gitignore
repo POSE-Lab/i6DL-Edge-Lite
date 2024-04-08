@@ -3,3 +3,4 @@ scripts/__pycache__/
 scripts/vis_results/
 scripts/eval/
 corr_/
+store

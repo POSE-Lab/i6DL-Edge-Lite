@@ -1,6 +1,9 @@
 # epos-opt
 
-Original code for vanillia EPOS from [EPOS: Estimating 6D Pose of Objects with Symmetries](https://github.com/thodan/epos)
+Original code for vanilla EPOS from [EPOS: Estimating 6D Pose of Objects with Symmetries](https://github.com/thodan/epos)
+## Prerequisites
+- CUDA >= 11.6
+- glog headers (`sudo apt-get install libgoogle-glog-dev`)
 ## Installation
 
 ### 1. Clone the environment and include submodules:
@@ -10,7 +13,8 @@ git clone --recursive https://github.com/pansap99/epos-opt.git
 ```
 
 ### 2. Set up conda environment
-
+- Change the prefix in `environment.yml` accordingly
+- Install environment with
 ```
 conda env create -f environment.yml
 ```
@@ -32,8 +36,8 @@ pip install pose_vis-1.0-py3-none-any.whl
 ```
 
 ### 5. Setup environment variables
-
-Create file ```~/anaconda3/envs/lala/etc/conda/activate.d/env_vars.sh``` with the following content:
+- Run `mkdir -p $CONDA_PREFIX/etc/conda/activate.d`
+- Create file ```$CONDA_PREFIX/etc/conda/activate.d/env_vars.sh``` with the following content:
 
 ```
 #!/bin/sh
@@ -53,6 +57,7 @@ export PYTHONPATH=$REPO_PATH/external/slim:$PYTHONPATH
 
 export LD_LIBRARY_PATH=$REPO_PATH/external/llvm/lib:$LD_LIBRARY_PATH
 ```
+- Re-activate conda environment to set the parameters
 
 ### 6. Download and setup the directories
 
@@ -80,4 +85,7 @@ python eval.py --gtPoses='../../datasets/carObj1/test_primesense/000001/scene_gt
 python vis.py  --objID=1  --images='../../datasets/carObj1/test_primesense/000001/rgb'  --poses='./eval/est_poses.json'  --confs='./eval/confs.txt'
 ```
 
-
+## Troubleshooting:
+  - `Could NOT find CUDA: Found unsuitable version "", but required is exact
+  version "11.6" (found /usr)` when building ProgressiveX: try specifying the CUDA toolkit location in cmake configuration 
+  (`-D CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda`)
