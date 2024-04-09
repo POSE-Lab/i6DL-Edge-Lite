@@ -90,7 +90,7 @@ python vis.py  --objID=1  --images='../../datasets/carObj1/test_primesense/00000
 The repo contains Dockerfiles for building Docker images containing all the required components to run epos-opt for two architectures (x86, arm).
 ## Prerequisites
 - Install the NVIDIA container toolkit as documented [here](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
-- If not already done, setup the directories as described in **Installation - step 6**.
+- If not already done, setup the directories as described in **[Installation - step 6](https://github.com/pansap99/epos-opt/?tab=readme-ov-file#6-download-and-setup-the-directories)**.
 
 ## Instructions
 - Change to the `docker` directory
@@ -99,7 +99,7 @@ The repo contains Dockerfiles for building Docker images containing all the requ
 - Run `run_container.sh` by specifying the desired Docker image, tag and architecture. For example, for running the arm image/-s, run `./run_container.sh epos-arm-opt latest arm`
 - Within the container, `cd /home/epos-opt/scripts`
 - From here follow the instructions in **Usage** (Visualization is not supported!)
-- To avoid the long build times, you can pull the images from Dockerhub with `docker pull` (`felice2023/base:latest`, `felice2023/epos-x86-opt:latest, felice2023/base-arm:latest`, `felice2023/epos-arm-opt:latest`). Please rename them with `docker image tag` before using them (remove the `felice2023`, e.g. change `felice2023/base:latest` to `base:latest`)
+- To avoid the long build times, you can pull the images from Dockerhub with `docker pull` (`felice2023/base-x86:latest`, `felice2023/epos-x86-opt:latest, felice2023/base-arm:latest`, `felice2023/epos-arm-opt:latest`). You can rename them with `docker image tag` before running, for convenience them (e.g. change `felice2023/base-x86:latest` to `base-x86:latest`)
 
 ## Troubleshooting:
   - `Could NOT find CUDA: Found unsuitable version "", but required is exact
