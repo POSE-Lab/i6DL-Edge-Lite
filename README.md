@@ -4,6 +4,8 @@ Original code for vanilla EPOS from [EPOS: Estimating 6D Pose of Objects with Sy
 ## Prerequisites
 - CUDA >= 11.6
 - glog headers (`sudo apt-get install libgoogle-glog-dev`)
+- libopencv-dev (`sudo apt-get install libopencv-dev`)
+- libeigen3-dev (`sudo apt-get install libeigen3-dev`)
 ## Installation
 
 ### 1. Clone the environment and include submodules:
@@ -103,4 +105,7 @@ The repo contains Dockerfiles for building Docker images containing all the requ
   - `Could NOT find CUDA: Found unsuitable version "", but required is exact
   version "11.6" (found /usr)` when building ProgressiveX outside Docker: try specifying the CUDA toolkit location in cmake configuration 
   (`-D CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda`)
+  - `ImportError: $CONDA_PREFIX/lib/lib/libstdc++.so.6: version 'GLIBCXX_3.4.30' not found (required by /lib/libgdal.so.30)` when running inference: try specifying the location of the required version of libstdc++.so.6 by creating a symbolic link:
+  (`ln -s /usr/lib/x86_64-linux-gnu/libstdc++.so.6 $CONDA_PREFIX/lib/libstdc++.so.6`)
+
   - `CMake Error: The source "/home/epos-opt/external/progressive-x/CMakeLists.txt" does not match the source "<path>/epos-opt/external/progressive-x/CMakeLists.txt" used to generate cache.  Re-run cmake with a different source directory.`: Delete CMakeCache.txt
