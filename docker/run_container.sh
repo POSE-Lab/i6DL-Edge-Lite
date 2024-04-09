@@ -7,10 +7,10 @@ IMAGE=$1
 TAG=$2
 ARCH=$3
 
-STORE_PATH="/home/nvidia/nvme/athena/epos-opt/store" # Path in the host containing trained models and other files
-BOP_PATH="/home/nvidia/nvme/athena/epos-opt/store/bop_datasets" # Path in the host for BOP datasets
-CONFIG_FILE="/home/nvidia/nvme/athena/epos-opt/scripts/config_mine.yml" # will be mounted on the container so it can be modified from the host. Use absolute path.
-EVAL_RES="/home/nvidia/nvme/athena/epos-opt/eval" # Folder to store evaluation results after the container's deletion. 
+STORE_PATH="/home/foto1/linux_part/athena/epos-opt/store" # Path in the host containing trained models and other files
+BOP_PATH="/home/foto1/linux_part/athena/epos-opt/store/bop_datasets" # Path in the host for BOP datasets
+CONFIG_FILE="/home/foto1/linux_part/athena/epos-opt/scripts/config_mine.yml" # will be mounted on the container so it can be modified from the host. Use absolute path.
+EVAL_RES="/home/foto1/linux_part/athena/epos-opt/eval" # Folder to store evaluation results after the container's deletion. 
 cd $ARCH 
 xhost +
 
