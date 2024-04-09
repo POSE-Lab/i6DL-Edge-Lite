@@ -8,7 +8,7 @@ ENV TZ=Europe/Athens
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # install needed packages and tools 
-COPY ./packages.txt ./packages.txt
+COPY ./docker/arm/base-arm/packages.txt ./packages.txt
 RUN apt-get update && xargs -a ./packages.txt apt-get install -y &&\
 pip3 install --upgrade pip && pip3 uninstall numpy && pip3 install "numpy<1.24" &&\
 rm -rf /var/lib/apt/lists/* && apt-get clean

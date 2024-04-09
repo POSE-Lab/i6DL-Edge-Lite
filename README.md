@@ -84,8 +84,22 @@ python eval.py --gtPoses='../../datasets/carObj1/test_primesense/000001/scene_gt
 ```
 python vis.py  --objID=1  --images='../../datasets/carObj1/test_primesense/000001/rgb'  --poses='./eval/est_poses.json'  --confs='./eval/confs.txt'
 ```
+## Dockers
+The repo contains Dockerfiles for building Docker images containing all the required components to run epos-opt for two architectures (x86, arm).
+## Prerequisites
+- Install the NVIDIA container toolkit as documented [here](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
+- If not already done, setup the directories as described in **Installation - step 6**.
+
+## Instructions
+- Change to the `docker` directory
+- If you wish to build the images, run the `build_all_<arch>.sh` script, where `<arch>`=`x86` or `arm`. Give the desired image tag (e.g. `latest`) as argument. The image used as base for `base` image is deprecated, and therefore unavailable to use for building the images from scratch.  
+- In `run_container.sh`, change the `STORE_PATH`, `BOP_PATH`, `CONFIG_FILE` variables accordingly (please use absolute paths). The folders defined by `$STORE_PATH`, `$BOP_PATH` and the file defined by `$CONFIG_FILE` will be mounted on the container on runtime from the host as bind mounts so the contents can be accessed from both the host and the container. 
+- Run `run_container.sh` by specifying the desired Docker image, tag and architecture. For example, for running the arm image/-s, run `./run_container.sh epos-arm-opt latest arm`
+- Within the container, `cd /home/epos-opt/scripts`
+- From here follow the instructions in **Usage** (Visualization is not supported!)
+- To avoid the long build times, you can pull the images from Dockerhub with `docker pull` (`felice2023/base:latest`, `felice2023/epos-x86-opt:latest, felice2023/base-arm:latest`, `felice2023/epos-arm-opt:latest`). Please rename them before using them (remove the `felice2023`, e.g. `felice2023/base:latest` to `base:latest`)
 
 ## Troubleshooting:
   - `Could NOT find CUDA: Found unsuitable version "", but required is exact
-  version "11.6" (found /usr)` when building ProgressiveX: try specifying the CUDA toolkit location in cmake configuration 
+  version "11.6" (found /usr)` when building ProgressiveX outside Docker: try specifying the CUDA toolkit location in cmake configuration 
   (`-D CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda`)
