@@ -11,7 +11,7 @@ Original code for vanilla EPOS from [EPOS: Estimating 6D Pose of Objects with Sy
 ### 1. Clone the environment and include submodules:
 
 ```
-git clone --recursive https://github.com/pansap99/epos-opt.git
+git clone --recursive https://github.com/POSE-Lab/epos-opt.git
 ```
 
 ### 2. Set up conda environment
