@@ -90,16 +90,15 @@ python vis.py  --objID=1  --images='../../datasets/carObj1/test_primesense/00000
 The repo contains Dockerfiles for building Docker images containing all the required components to run epos-opt for two architectures (x86, arm).
 ## Prerequisites
 - Install the NVIDIA container toolkit as documented [here](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
-- If not already done, setup the directories as described in **[Installation - step 6](https://github.com/pansap99/epos-opt/?tab=readme-ov-file#6-download-and-setup-the-directories)**.
+- If not already done, setup the directories as described in **[Installation - step 6](https://github.com/POSE-Lab/epos-opt/?tab=readme-ov-file#6-download-and-setup-the-directories)**.
 
 ## Instructions
-- Change to the `docker` directory
-- If you wish to build the images, run the `build_all_<arch>.sh` script, where `<arch>`=`x86` or `arm`. Give the desired image tag (e.g. `latest`) as argument. The image used as base for `base` image is deprecated, and therefore unavailable to use for building the images from scratch.  
-- In `run_container.sh`, change the `STORE_PATH`, `BOP_PATH`, `EVAL_RES`, `CONFIG_FILE` variables accordingly (please use absolute paths). The folders defined by `$STORE_PATH`, `$BOP_PATH` , `$EVAL_RES` and the file defined by `$CONFIG_FILE` will be mounted on the container on runtime from the host as bind mounts so the contents can be accessed from both the host and the container. The paths in the `config.yml` file should refer to directories *in the container* (typically beginning with `/home/epos-opt/`). 
-- Run `run_container.sh` by specifying the desired Docker image, tag and architecture. For example, for running the arm image/-s, run `./run_container.sh epos-arm-opt latest arm`
-- Within the container, `cd /home/epos-opt/scripts`
-- From here follow the instructions in **Usage** (Visualization is not supported!)
-- To avoid the long build times, you can pull the images from Dockerhub with `docker pull` (`felice2023/base-x86:latest`, `felice2023/epos-x86-opt:latest, felice2023/base-arm:latest`, `felice2023/epos-arm-opt:latest`). You can rename them with `docker image tag` before running, for convenience them (e.g. change `felice2023/base-x86:latest` to `base-x86:latest`)
+1. Change to the `docker` directory
+2. If you wish to build the images, run the `build_all_<arch>.sh` script, where `<arch>`=`x86` or `arm`. Give the desired image tag (e.g. `latest`) as argument. To avoid the long build times, you can pull the built images from Dockerhub with `docker pull` (`felice2023/base-x86:latest`, `felice2023/epos-x86-opt:latest, felice2023/base-arm:latest`, `felice2023/epos-arm-opt:latest`). You can give them an alias with `docker image tag` before running, for convenience (e.g. change `felice2023/base-x86:latest` to `base-x86:latest`). Run `epos-<arch>-opt` as described in steps 3, 4.   
+3. In `run_container.sh`, change the `STORE_PATH`, `BOP_PATH`, `EVAL_RES`, `CONFIG_FILE` variables accordingly (please use absolute paths). The folders defined by `$STORE_PATH`, `$BOP_PATH` , `$EVAL_RES` and the file defined by `$CONFIG_FILE` will be mounted on the container on runtime from the host as bind mounts so the contents can be accessed from both the host and the container. The paths in the `config.yml` file should refer to directories *in the container* (typically beginning with `/home/epos-opt/`). 
+4. Run `run_container.sh` by specifying the desired Docker image (typically `epos-x86-opt` or `epos-arm-opt`), tag and architecture. For example, for running the arm image/-s, run `./run_container.sh epos-arm-opt latest arm`
+5. Within the container, `cd /home/epos-opt/scripts`
+6. From here follow the instructions in **Usage** (Visualization is not supported!)
 
 ## Troubleshooting:
   - `Could NOT find CUDA: Found unsuitable version "", but required is exact

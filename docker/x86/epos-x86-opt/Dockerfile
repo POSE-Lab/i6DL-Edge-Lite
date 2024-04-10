@@ -1,4 +1,4 @@
-FROM base:latest
+FROM base-x86:latest
 WORKDIR /home
 
 ## Set up EPOS
