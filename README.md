@@ -108,3 +108,4 @@ The repo contains Dockerfiles for building Docker images containing all the requ
   (`ln -s /usr/lib/x86_64-linux-gnu/libstdc++.so.6 $CONDA_PREFIX/lib/libstdc++.so.6`)
 
   - `CMake Error: The source "/home/epos-opt/external/progressive-x/CMakeLists.txt" does not match the source "<path>/epos-opt/external/progressive-x/CMakeLists.txt" used to generate cache.  Re-run cmake with a different source directory.`: Delete CMakeCache.txt
+  - `error: 'clamp' is not a member of 'std'` when building Progressive-X: Confirm that the GCC and g++ compilers support the C++ standard 17 by running `gcc -v --help 2> /dev/null | sed -n '/^ *-std=\([^<][^ ]\+\).*/ {s//\1/p}'`. Then delete the `build` folder and run CMake again as `cmake .. -DCMAKE_BUILD_TYPE=Release -D PYBIND11_CPP_STANDARD=-std=c++17`
