@@ -1,4 +1,4 @@
-# epos-opt
+# i6DL-Edge-Lite
 
 Original code for vanilla EPOS from [EPOS: Estimating 6D Pose of Objects with Symmetries](https://github.com/thodan/epos)
 ## Prerequisites
