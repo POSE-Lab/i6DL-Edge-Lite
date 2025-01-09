@@ -1,6 +1,7 @@
 # i6DL-Edge-Lite
 
-Original code for vanilla EPOS from [EPOS: Estimating 6D Pose of Objects with Symmetries](https://github.com/thodan/epos)
+ROS-independent version of [6DL-Edge](https://github.com/POSE-Lab/i6DL-Edge)
+
 ## Prerequisites
 - CUDA >= 11.6
 - glog headers (`sudo apt-get install libgoogle-glog-dev`)
@@ -90,7 +91,7 @@ python vis.py  --objID=1  --images='../../datasets/carObj1/test_primesense/00000
 The repo contains Dockerfiles for building Docker images containing all the required components to run epos-opt for two architectures (x86, arm).
 ## Prerequisites
 - Install the NVIDIA container toolkit as documented [here](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
-- If not already done, setup the directories as described in **[Installation - step 6](https://github.com/POSE-Lab/epos-opt/?tab=readme-ov-file#6-download-and-setup-the-directories)**.
+- If not already done, setup the directories as described in **[Installation - step 6](https://github.com/POSE-Lab/i6DL-Edge-Lite/?tab=readme-ov-file#6-download-and-setup-the-directories)**.
 
 ## Instructions
 1. Change to the `docker` directory
