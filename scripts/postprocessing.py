@@ -17,7 +17,7 @@ import cv2 as cv
 
 
 def process_image(self,K,predTime,image,predictions, im_id, scene_id, output_scale, model_store,
-        renderer, task_type,corr_path,timestamp,profiler: Profiler,obj_3d_points,faces_3d_obj):
+         task_type,corr_path,timestamp,profiler: Profiler,obj_3d_points,faces_3d_obj):
     """Estimates object poses from one image.
 
     Args:
@@ -28,7 +28,6 @@ def process_image(self,K,predTime,image,predictions, im_id, scene_id, output_sca
       crop_size: Image crop size (width, height).
       output_scale: Scale of the model output w.r.t. the input (output / input).
       model_store: Store for 3D object models of class ObjectModelStore.
-      renderer: Renderer of class bop_renderer.Renderer().
       task_type: 6D object pose estimation task (common.LOCALIZATION or
         common.DETECTION).
       infer_name: Name of the current inference.

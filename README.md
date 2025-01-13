@@ -1,6 +1,6 @@
 # i6DL-Edge-Lite
 
-ROS-independent version of [6DL-Edge](https://github.com/POSE-Lab/i6DL-Edge)
+ROS-independent version of [i6DL-Edge](https://github.com/POSE-Lab/i6DL-Edge)
 
 ## Prerequisites
 - CUDA >= 11.6
@@ -12,12 +12,12 @@ ROS-independent version of [6DL-Edge](https://github.com/POSE-Lab/i6DL-Edge)
 ### 1. Clone the environment and include submodules:
 
 ```
-git clone --recursive https://github.com/POSE-Lab/epos-opt.git
+git clone --recursive https://github.com/POSE-Lab/i6DL-Edge-Lite.git
 ```
 
 ### 2. Set up conda environment
-- Change the prefix in `environment.yml` accordingly
-- Install environment with
+- Change the prefix in `environment.yml` to `$CONDA_PREFIX/envs/eposOpt`, where `$CONDA_PREFIX` is the Anaconda installation path
+- Install the environment with
 ```
 conda env create -f environment.yml
 ```

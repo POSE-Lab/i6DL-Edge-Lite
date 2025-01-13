@@ -117,7 +117,6 @@ class EposModel:
                 scene_id=objID,
                 output_scale=(1.0 / self.decoder_output_stride[0]),
                 model_store=self.model_store,
-                renderer=None,
                 task_type=self.task_type,
                 corr_path=corr_path,
                 timestamp=timestamp,
