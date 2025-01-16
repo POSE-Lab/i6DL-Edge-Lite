@@ -39,6 +39,7 @@ def main(args):
     with Progress() as progress:
         infer_task = progress.add_task("[red]Running inference...", total=len(images))
         for img in images:
+            #print('Reading img', img)
             pred = epos_model.predictPose(epos_model.K,FLAGS.objID,
                                     load_image_PIL(img),
                                     epos_model.corr_path,

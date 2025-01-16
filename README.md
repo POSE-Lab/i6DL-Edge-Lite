@@ -1,6 +1,6 @@
 # i6DL-Edge-Lite
 
-ROS-independent version of [i6DL-Edge](https://github.com/POSE-Lab/i6DL-Edge)
+ROS-independent version of [i6DL-Edge](https://github.com/POSE-Lab/i6DL-Edge). The code was tested on Ubuntu 20.04, with GCC/G++ 9.4.0. 
 
 ## Prerequisites
 - CUDA >= 11.6
@@ -16,17 +16,20 @@ git clone --recursive https://github.com/POSE-Lab/i6DL-Edge-Lite.git
 ```
 
 ### 2. Set up conda environment
-- Change the prefix in `environment.yml` to `$CONDA_PREFIX/envs/eposOpt`, where `$CONDA_PREFIX` is the Anaconda installation path
-- Install the environment with
+- Change to `base` environment
+- Install the i6DL-Edge-Lite environment with
 ```
-conda env create -f environment.yml
+conda env create --prefix $CONDA_PREFIX/envs/eposOpt -f environment.yml
 ```
+`$CONDA_PREFIX` is the environment variable pointing to the Anaconda installation path. 
+
+Activate the environment and proceed with the rest of the steps.
 
 ### 3. Build progressive-x
 
 ```
 cd ./external/progressive-x
-mkdir build; cd build;
+cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 make -j8
 ```
@@ -53,42 +56,58 @@ export TF_DATA_PATH=$STORE_PATH/tf_data  # Folder with TFRecord files.
 export TF_MODELS_PATH=$STORE_PATH/tf_models  # Folder with trained EPOS models.
 
 export PYTHONPATH=$REPO_PATH:$PYTHONPATH
-export PYTHONPATH=$REPO_PATH/external/bop_renderer/build:$PYTHONPATH
 export PYTHONPATH=$REPO_PATH/external/bop_toolkit:$PYTHONPATH
 export PYTHONPATH=$REPO_PATH/external/progressive-x/build:$PYTHONPATH
-export PYTHONPATH=$REPO_PATH/external/slim:$PYTHONPATH
-
 export LD_LIBRARY_PATH=$REPO_PATH/external/llvm/lib:$LD_LIBRARY_PATH
 ```
 - Re-activate conda environment to set the parameters
 
 ### 6. Download and setup the directories
 
-- Download models from this [folder](https://ntuagr-my.sharepoint.com/:f:/g/personal/psapoutzoglou_ntua_gr/EnRqn_GBhJpKj_DOiuSLYlMBqtT8M2_HYY2hDAvcyyYdng?e=3wRcPN) and place them under the ```$STORE_PATH``` directory
-- Donwload any dataset from the ```datasets``` [folder](https://ntuagr-my.sharepoint.com/:f:/g/personal/psapoutzoglou_ntua_gr/ElH4q1jy60pApZIKXSS33PYBO34GMvJOVg_x81g58ZzPbA?e=f3G6TX) and place it under ```$BOP_PATH$``` directory.
-- Adjust the ```./config.yml``` file accordingly.
+- Download any trained model from this [folder](https://ntuagr-my.sharepoint.com/:f:/g/personal/psapoutzoglou_ntua_gr/EnRqn_GBhJpKj_DOiuSLYlMBqtT8M2_HYY2hDAvcyyYdng?e=3wRcPN), unzip it and place it under the ```$STORE_PATH``` directory
+- Download any dataset from the ```datasets``` [folder](https://ntuagr-my.sharepoint.com/:f:/g/personal/psapoutzoglou_ntua_gr/ElH4q1jy60pApZIKXSS33PYBO34GMvJOVg_x81g58ZzPbA?e=f3G6TX) and place it under the ```$BOP_PATH``` directory.
+- Make a copy of the ```./config.yml``` file named e.g. `config_mine.yml` and adjust it accordingly.
 
 ## Usage 
+
+Run the inference, evaluation, visualization scripts from within the `scripts` folder.
 
 ### Inference with the ONNX runtime
 
 ```
-python infer.py --imagePath='path/to/images' --config=./config.yml  --objID=1
+python infer.py --imagePath='/path/to/images' --config=/path/to/config_file  --objID=<object ID>
 ```
+e.g.
+
+```
+python infer.py --imagePath=../../datasets/carObj1/test_primesense/000001/rgb/ --config=./config_mine.yml  --objID=1
+```
+### Inference with TensorRT
+
 
 ### Evaluation
 
 ```
-python eval.py --gtPoses='../../datasets/carObj1/test_primesense/000001/scene_gt.json' --estPoses='./eval/est_poses.json'
+python eval.py --config /path/to/config_file --gtPoses='/path/to/bop dataset/scene_gt.json' --estPoses='/path/to/evaluation_results/est_poses.json'
+```
+e.g. 
+
+```
+python eval.py --config ./config_mine.yml --gtPoses='../../datasets/carObj1/test_primesense/000001/scene_gt.json' --estPoses='./eval/est_poses.json'
 ```
 
 ### Visualization
 
 ```
+python vis.py  --objID=<object ID>  --images='/path/to/images'  --poses='./path/to/evaluation_results/est_poses.json'  --confs='./path/to/evaluation_results/confs.txt'
+```
+e.g. 
+
+```
 python vis.py  --objID=1  --images='../../datasets/carObj1/test_primesense/000001/rgb'  --poses='./eval/est_poses.json'  --confs='./eval/confs.txt'
 ```
 ## Dockers
-The repo contains Dockerfiles for building Docker images containing all the required components to run epos-opt for two architectures (x86, arm).
+The repo contains Dockerfiles for building Docker images containing all the required components to run i6DL-Edge-Lite for two architectures (x86, arm/aarch64).
 ## Prerequisites
 - Install the NVIDIA container toolkit as documented [here](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
 - If not already done, setup the directories as described in **[Installation - step 6](https://github.com/POSE-Lab/i6DL-Edge-Lite/?tab=readme-ov-file#6-download-and-setup-the-directories)**.

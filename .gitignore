@@ -4,5 +4,8 @@ scripts/vis_results/
 scripts/eval/
 corr_/
 store
-scripts/config_mine.yml
+scripts/config_*.yml
 eval
+*.whl
+launch.json
+.vscode
