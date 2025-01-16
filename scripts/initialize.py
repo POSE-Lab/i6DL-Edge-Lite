@@ -84,8 +84,8 @@ class EposModel:
     def predictPose(self,K,objID,rgb_image_input,corr_path,img_id,timestamp):
 
         rgb_image_input_ = np.array(rgb_image_input).astype(np.float32)
-        
-
+        img_dim_ = rgb_image_input_.shape
+    
         self.profiler.addTrackItem("predict_pose")
         self.profiler.start("predict_pose")
 
@@ -111,7 +111,7 @@ class EposModel:
                 self,
                 K=K,
                 predTime = infer_time_elapsed,
-                image="",
+                img_dim = img_dim_,
                 predictions= raw_predictions, #TODO: dictiomary
                 im_id=img_id,
                 scene_id=objID,

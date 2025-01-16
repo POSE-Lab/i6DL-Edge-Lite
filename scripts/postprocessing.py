@@ -16,7 +16,7 @@ import cv2 as cv
 
 
 
-def process_image(self,K,predTime,image,predictions, im_id, scene_id, output_scale, model_store,
+def process_image(self,K,predTime,img_dim,predictions, im_id, scene_id, output_scale, model_store,
          task_type,corr_path,timestamp,profiler: Profiler,obj_3d_points,faces_3d_obj):
     """Estimates object poses from one image.
 
@@ -78,6 +78,7 @@ def process_image(self,K,predTime,image,predictions, im_id, scene_id, output_sca
         # Skip the fitting if there are too few correspondences.
         min_required_corrs = 6
         if num_corrs < min_required_corrs:
+            print("Too few correspondences, skipping fitting")
             continue
 
         # The correspondences need to be sorted for PROSAC.
@@ -243,7 +244,7 @@ def process_image(self,K,predTime,image,predictions, im_id, scene_id, output_sca
                     print("CONFIDENCE",pose_confidense)
                     if num_instances == 2:
                         #print(f"Looking for inliers {i}")
-                        filter_mask = np.zeros((480, 640, 1), dtype=np.uint8)
+                        filter_mask = np.zeros((img_dim[0], img_dim[1], 1), dtype=np.uint8) # height, width
                         # get faces
                         for f in faces_3d_obj:
                             fc = np.array([[f.v1.x,f.v1.y,f.v1.z],
@@ -259,7 +260,7 @@ def process_image(self,K,predTime,image,predictions, im_id, scene_id, output_sca
                         for cr in range(len(obj_corr['coord_2d'])):
                             xc,yc = int(obj_corr['coord_2d'][cr][0]),int(obj_corr['coord_2d'][cr][1])
                             #print(xc,yc)
-                            if yc < 480 and xc<640:
+                            if yc < img_dim[0] and xc < img_dim[1]:
                                 if filter_mask[yc,xc] == 255 \
                                     and inlier_indices[cr] ==2 or inlier_indices[cr] ==i:
                                         if inlier_indices[cr] == i:
