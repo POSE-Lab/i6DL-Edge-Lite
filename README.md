@@ -7,6 +7,7 @@ ROS-independent version of [i6DL-Edge](https://github.com/POSE-Lab/i6DL-Edge). T
 - glog headers (`sudo apt-get install libgoogle-glog-dev`)
 - libopencv-dev (`sudo apt-get install libopencv-dev`)
 - libeigen3-dev (`sudo apt-get install libeigen3-dev`)
+
 ## Installation
 
 ### 1. Clone the environment and include submodules:
@@ -16,14 +17,14 @@ git clone --recursive https://github.com/POSE-Lab/i6DL-Edge-Lite.git
 ```
 
 ### 2. Set up conda environment
-- Change to `base` environment
+- Change to `base` environment.
 - Install the i6DL-Edge-Lite environment with
 ```
-conda env create --prefix $CONDA_PREFIX/envs/eposOpt -f environment.yml
+conda env create --prefix $CONDA_PREFIX/envs/edgeLite -f environment.yml
 ```
 `$CONDA_PREFIX` is the environment variable pointing to the Anaconda installation path. 
 
-Activate the environment and proceed with the rest of the steps.
+- Activate the environment and proceed with the rest of the steps.
 
 ### 3. Build progressive-x
 
@@ -31,7 +32,7 @@ Activate the environment and proceed with the rest of the steps.
 cd ./external/progressive-x
 cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
-make -j8
+make -j$(nproc)
 ```
 
 ### 4. Install visualization package (Optional)
@@ -60,7 +61,7 @@ export PYTHONPATH=$REPO_PATH/external/bop_toolkit:$PYTHONPATH
 export PYTHONPATH=$REPO_PATH/external/progressive-x/build:$PYTHONPATH
 export LD_LIBRARY_PATH=$REPO_PATH/external/llvm/lib:$LD_LIBRARY_PATH
 ```
-- Re-activate conda environment to set the parameters
+- Re-activate conda environment to set the environment variables defined in the previous step.
 
 ### 6. Download and setup the directories
 
@@ -107,18 +108,69 @@ e.g.
 python vis.py  --objID=1  --images='../../datasets/carObj1/test_primesense/000001/rgb'  --poses='./eval/est_poses.json'  --confs='./eval/confs.txt'
 ```
 ## Dockers
-The repo contains Dockerfiles for building Docker images containing all the required components to run i6DL-Edge-Lite for two architectures (x86, arm/aarch64).
-## Prerequisites
-- Install the NVIDIA container toolkit as documented [here](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
-- If not already done, setup the directories as described in **[Installation - step 6](https://github.com/POSE-Lab/i6DL-Edge-Lite/?tab=readme-ov-file#6-download-and-setup-the-directories)**.
+The repo contains Dockerfiles for building Docker images containing all the required components to run i6DL-Edge-Lite for two architectures (x86_64, arm/aarch64).
+
+### Prerequisites
+
+**Install dependencies:**
+
+```
+sudo apt-get update
+sudo apt-get install \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+```
+
+**Add Docker’s official GPG key:**
+
+```
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+```
+
+**Set up the Docker repository:**
+
+```
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+```
+**Install Docker:**
+
+```
+  sudo apt-get update
+  sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+```
+
+**Verify installation:**
+```
+  sudo docker run hello-world
+```
+**Enable GPU/CUDA support**
+- Install the appropriate NVIDIA drivers for your system from [the official page](https://www.nvidia.com/en-us/drivers/). Supported driver versions are >= 418.81.07
+- Install the NVIDIA container toolkit as documented [here](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html) (the Apt installation was tested)
+
 
 ## Instructions
-1. Change to the `docker` directory
-2. If you wish to build the images, run the `build_all_<arch>.sh` script, where `<arch>`=`x86` or `arm`. Give the desired image tag (e.g. `latest`) as argument. To avoid the long build times, you can pull the built images from Dockerhub with `docker pull` (`felice2023/base-x86:latest`, `felice2023/epos-x86-opt:latest, felice2023/base-arm:latest`, `felice2023/epos-arm-opt:latest`). You can give them an alias with `docker image tag` before running, for convenience (e.g. change `felice2023/base-x86:latest` to `base-x86:latest`). Run `epos-<arch>-opt` as described in steps 3, 4.   
-3. In `run_container.sh`, change the `STORE_PATH`, `BOP_PATH`, `EVAL_RES`, `CONFIG_FILE` variables accordingly (please use absolute paths). The folders defined by `$STORE_PATH`, `$BOP_PATH` , `$EVAL_RES` and the file defined by `$CONFIG_FILE` will be mounted on the container on runtime from the host as bind mounts so the contents can be accessed from both the host and the container. The paths in the `config.yml` file should refer to directories *in the container* (typically beginning with `/home/epos-opt/`). 
-4. Run `run_container.sh` by specifying the desired Docker image (typically `epos-x86-opt` or `epos-arm-opt`), tag and architecture. For example, for running the arm image/-s, run `./run_container.sh epos-arm-opt latest arm`
-5. Within the container, `cd /home/epos-opt/scripts`
-6. From here follow the instructions in **Usage** (Visualization is not supported!)
+1. If not already done, setup the directories as described in **[Installation - step 6](https://github.com/POSE-Lab/i6DL-Edge-Lite/?tab=readme-ov-file#6-download-and-setup-the-directories)**.
+2. Change to the `docker` directory
+2. Build the images: run the `build_all.sh` script. Give as arguments the desired image tag (e.g. `latest`) and the CPU architecture (i.e. "x86" or "arm") for which you wish to build the Docker images (e.g `./build_all.sh latest x86`). 
+3. Run `run_container.sh` with the following key-value arguments: 
+```
+  IMAGE: A valid docker image name
+  TAG: Docker image tag
+  STORE_PATH: Absolute path in the host containing trained models and other files. Maps to /home/i6DL-Edge-Lite/store in the container.
+  BOP_PATH: Absolute path in the host for BOP datasets. Maps to /home/i6DL-Edge-Lite/store/bop_datasets in the container.
+  CONFIG_FILE: Absolute path to .yml configuration file containing path to trained model, EPOS related flags etc. Maps to /home/i6DL-Edge-Lite/scripts/config.yml in the container.
+  EVAL_RES: Absolute path to folder for storing evaluation results after the container's deletion. Maps to /home/i6DL-Edge-Lite/scripts/eval in the container.
+
+```
+  For this particular script **only**, the order of the arguments is irrelevant. The folders defined by `$STORE_PATH`, `$BOP_PATH` , `$EVAL_RES` and the file defined by `$CONFIG_FILE` will be mounted on the container on runtime from the host as bind mounts so the contents can be accessed from both the host and the container. The paths in the `$CONFIG_FILE` file should refer to directories *in the container* (typically beginning with `/home/i6DL-Edge-Lite/`). 
+
+4. Within the container, `cd /home/i6DL-Edge-Lite/scripts`
+5. From here follow the instructions in **Usage** (Visualization is not supported!)
 
 ## Troubleshooting:
   - `Could NOT find CUDA: Found unsuitable version "", but required is exact
@@ -127,5 +179,5 @@ The repo contains Dockerfiles for building Docker images containing all the requ
   - `ImportError: $CONDA_PREFIX/lib/lib/libstdc++.so.6: version 'GLIBCXX_3.4.30' not found (required by /lib/libgdal.so.30)` when running inference: try specifying the location of the required version of libstdc++.so.6 by creating a symbolic link:
   (`ln -s /usr/lib/x86_64-linux-gnu/libstdc++.so.6 $CONDA_PREFIX/lib/libstdc++.so.6`)
 
-  - `CMake Error: The source "/home/epos-opt/external/progressive-x/CMakeLists.txt" does not match the source "<path>/epos-opt/external/progressive-x/CMakeLists.txt" used to generate cache.  Re-run cmake with a different source directory.`: Delete CMakeCache.txt
+  - `CMake Error: The source "<container path>/external/progressive-x/CMakeLists.txt" does not match the source "<host path>/external/progressive-x/CMakeLists.txt" used to generate cache.  Re-run cmake with a different source directory.` when building the Docker images (specifically i6dl-edge-lite-<arch>): This may occur if you have built Progressive-X outside the Docker container first. Delete CMakeCache.txt in external/progressive-x/build on the host and re-run `build_all.sh`. 
   - `error: 'clamp' is not a member of 'std'` when building Progressive-X: Confirm that the GCC and g++ compilers support the C++ standard 17 by running `gcc -v --help 2> /dev/null | sed -n '/^ *-std=\([^<][^ ]\+\).*/ {s//\1/p}'`. Then delete the `build` folder and run CMake again as `cmake .. -DCMAKE_BUILD_TYPE=Release -D PYBIND11_CPP_STANDARD=-std=c++17`

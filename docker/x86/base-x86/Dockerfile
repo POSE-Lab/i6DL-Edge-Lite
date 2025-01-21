@@ -9,9 +9,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=${TIMEZONE}
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ENV RELEASE=focal
+
 # Install tools needed
-# "python-numpy" package previously installed is incompatible with
-# tensorflow version used. In addition, we need numpy<1.24 since some 
+# install numpy<1.24 since some 
 # functions/data types etc are deprecated in newer numpy versions
 COPY ./docker/x86/base-x86/packages.txt ./packages.txt
 RUN apt-get update && xargs -a ./packages.txt apt-get install -y &&\
@@ -24,18 +24,19 @@ ARG BRANCH_NAME=4.7.0-modified
 ARG OPENCV_VERSION=4.7.0
 ARG OPENCV_REPO=https://github.com/opencv/opencv.git
 ARG OPENCV_CONTRIB=https://github.com/opencv/opencv_contrib.git
-ARG OPENCV_FORK=https://github.com/athnzc/opencv.git
-#ARG OPENCV_CONTRIB_FORK=https://github.com/athnzc/opencv_contrib.git
+ARG OPENCV_FORK=https://github.com/POSE-Lab/opencv_fork
+
+ARG CPU_CORES=8
 RUN cd ./tmp && \
     git clone $OPENCV_FORK &&\
     git clone $OPENCV_CONTRIB &&\
-    cd opencv && \
+    cd opencv_fork && \
     git checkout $BRANCH_NAME &&\
     cd ../opencv_contrib &&\
     git checkout tags/$OPENCV_VERSION &&\
-    cd ../opencv
-RUN     mkdir -p /tmp/opencv/build && \
-        cd /tmp/opencv/build && \
+    cd ../opencv_fork
+RUN     mkdir -p /tmp/opencv_fork/build && \
+        cd /tmp/opencv_fork/build && \
          cmake \
         -D CMAKE_INSTALL_PREFIX=/usr/local \
           -D BUILD_TIFF=ON \
@@ -86,8 +87,8 @@ RUN     mkdir -p /tmp/opencv/build && \
            -D OPENCV_PYTHON3_INSTALL_PATH=/usr/lib/python3/dist-packages \
           -D CMAKE_BUILD_TYPE=Release \
           -D OPENCV_EXTRA_MODULES_PATH=/tmp/opencv_contrib/modules .. &&\
-    	    make -j8 install &&\
-   	   rm -r /tmp/opencv && \
+    	    make -j${CPU_CORES} install &&\
+   	   rm -r /tmp/opencv_fork && \
     	 rm -r /tmp/opencv_contrib
 
 
