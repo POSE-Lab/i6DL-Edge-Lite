@@ -6,7 +6,7 @@ from profiler import Profiler
 from utilsHF import load_image,load3DModel
 from postprocessing import process_image
 from PIL import Image
-
+from TensorRT import TRT_engine
 
 
 class EposModel:
@@ -18,9 +18,7 @@ class EposModel:
         self.profiler.start("epos_model_init")
         for key in attrs:
             setattr(self, key, None if attrs[key] == 'None' else attrs[key])
-        
-        if self.method == 'trt':
-            from TensorRT import TRT_engine
+            
         print('\n'.join("%s: %s" % item for item in attrs.items()))
         # load models for fragmentation
         self.model_store_frag = datagen.ObjectModelStore(
@@ -85,7 +83,7 @@ class EposModel:
 
         rgb_image_input_ = np.array(rgb_image_input).astype(np.float32)
         img_dim_ = rgb_image_input_.shape
-    
+
         self.profiler.addTrackItem("predict_pose")
         self.profiler.start("predict_pose")
 
