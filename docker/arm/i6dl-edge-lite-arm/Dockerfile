@@ -1,6 +1,7 @@
-FROM base-arm:latest
+ARG TAG=latest
+FROM base-arm:${TAG}
 WORKDIR /home
-
+ARG CPU_CORES=8
 ## Set up EPOS
 # Install pip wheel for ONNX for Jetson
 RUN wget https://nvidia.box.com/shared/static/v59xkrnvederwewo2f1jtv6yurl92xso.whl -O onnxruntime_gpu-1.12.1-cp38-cp38-linux_aarch64.whl &&\
@@ -21,7 +22,7 @@ RUN cd libigl-python-bindings && python3 -m pip install ./
 
 RUN apt update -y && apt install -y python-is-python3
 ENV REPO_PATH_SRC=.
-ENV REPO_PATH=/home/epos-opt
+ENV REPO_PATH=/home/i6DL-Edge-Lite
 COPY $REPO_PATH_SRC $REPO_PATH
 ENV PYTHONPATH=$REPO_PATH:$PYTHONPATH
 ENV PYTHONPATH=$REPO_PATH/external/bop_renderer/build:$PYTHONPATH
@@ -31,26 +32,11 @@ ENV PYTHONPATH=$REPO_PATH/external/slim:$PYTHONPATH
 
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$REPO_PATH/external/llvm/lib
 
-# The installation locations of OSMesa and LLVM:
-# ENV OSMESA_PREFIX=$REPO_PATH_DST/external/osmesa
-# ENV LLVM_PREFIX=$REPO_PATH_DST/external/llvm
-
-# RUN mkdir -p $OSMESA_PREFIX &&\
-# mkdir -p $LLVM_PREFIX &&\
-# cd $REPO_PATH_DST/external/bop_renderer/osmesa-install &&\
-# mkdir -p ./build &&\
-# cd ./build &&\
-# bash ../osmesa-install.sh
-
-# RUN cd $REPO_PATH_DST/external/bop_renderer &&\
-# mkdir -p ./build &&\
-# cd ./build &&\
-# cmake .. -DCMAKE_BUILD_TYPE=Release &&\
-# make -j8
+RUN echo "Using ${CPU_CORES} CPU cores"
 
 RUN mkdir -p $REPO_PATH/external/progressive-x/build &&\
 cd $REPO_PATH/external/progressive-x/build &&\
 cmake .. -DCMAKE_BUILD_TYPE=Release &&\
-make -j8
+make -j${CPU_CORES}
 
 RUN pip install matplotlib rich tqdm plyfile
