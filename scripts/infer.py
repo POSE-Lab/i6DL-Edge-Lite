@@ -50,6 +50,8 @@ def main(args):
             poses+=pred[0]
             timings.append(pred[-1]['total'])
 
+        epos_model.trtEngine.cfx.pop() # to prevent PyCUDA ERROR: The context stack was not empty upon module cleanup.
+        
     CONSOLE.log(f"[:party:]Done inference. Mean time: {np.array(timings).mean()}")
 
     # save confs and estimated poses
