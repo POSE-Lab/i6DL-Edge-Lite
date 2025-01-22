@@ -16,7 +16,7 @@ class TRT_engine:
         self.context = self.engine.create_execution_context()
 
         input_shape = self.context.get_tensor_shape(input_tensor)
-        input_nbytes = trt.volume(input_shape) *np.dtype(np.np.float3232).itemsize
+        input_nbytes = trt.volume(input_shape) *np.dtype(np.float32).itemsize
 
         self.input_gpu = cuda.mem_alloc(input_nbytes)
 
@@ -26,7 +26,7 @@ class TRT_engine:
         self.cpu_outputs=[]
         self.gpu_outputs=[]
         for i in range(1,5):
-            self.cpu_outputs.append(cuda.pagelocked_empty(tuple(self.context.get_binding_shape(i)), dtype=np.np.float3232))
+            self.cpu_outputs.append(cuda.pagelocked_empty(tuple(self.context.get_binding_shape(i)), dtype=np.float32))
             self.gpu_outputs.append(cuda.mem_alloc(self.cpu_outputs[i-1].nbytes))
 
     def predict(self,image):
@@ -53,6 +53,8 @@ class TRT_engine:
                     'pred_obj_conf':self.cpu_outputs[0],
                     'pred_obj_label':self.cpu_outputs[3]}
         self.cfx.pop()
+        # del self.cfx
+        # del self.engine
         return predictions,eval_time_elapsed
     
     def visualize(self):
