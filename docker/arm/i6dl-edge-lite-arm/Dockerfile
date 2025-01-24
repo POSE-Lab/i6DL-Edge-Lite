@@ -8,7 +8,7 @@ RUN wget https://nvidia.box.com/shared/static/v59xkrnvederwewo2f1jtv6yurl92xso.w
 pip3 install --upgrade pip && pip3 install onnxruntime_gpu-1.12.1-cp38-cp38-linux_aarch64.whl
 
 # Install necessary Python modules
-COPY ./docker/arm/epos-arm-opt/requirements.txt ./requirements.txt
+COPY ./docker/arm/i6dl-edge-lite-arm/requirements.txt ./requirements.txt
 RUN pip3 install --upgrade pip && pip3 install -r requirements.txt
 
 
@@ -25,7 +25,6 @@ ENV REPO_PATH_SRC=.
 ENV REPO_PATH=/home/i6DL-Edge-Lite
 COPY $REPO_PATH_SRC $REPO_PATH
 ENV PYTHONPATH=$REPO_PATH:$PYTHONPATH
-ENV PYTHONPATH=$REPO_PATH/external/bop_renderer/build:$PYTHONPATH
 ENV PYTHONPATH=$REPO_PATH/external/bop_toolkit:$PYTHONPATH
 ENV PYTHONPATH=$REPO_PATH/external/progressive-x/build:$PYTHONPATH
 ENV PYTHONPATH=$REPO_PATH/external/slim:$PYTHONPATH

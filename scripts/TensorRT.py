@@ -11,6 +11,7 @@ class TRT_engine:
         self.profiler = profiler
         self.cfx = cuda.Device(0).make_context()
         self.runtime = trt.Runtime(trt.Logger(trt.Logger.WARNING)) 
+        print("Loading engine from", engine_path)
         with open(engine_path, 'rb') as f:
             self.engine = self.runtime.deserialize_cuda_engine(f.read())
         self.context = self.engine.create_execution_context()

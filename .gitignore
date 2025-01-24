@@ -9,3 +9,5 @@ eval
 *.whl
 launch.json
 .vscode
+*.engine
+eval_*

@@ -2,6 +2,7 @@
 input_tensor_name: "rgb_image_input:0"
 method: 'onnx' # or `trt` for running TensorRT inference 
 onnx: "../../store/crf12345AndLab123MI3_640/crf12345AndLab123MI3_640.onnx"
+trt: "../../store/crf12345AndLab123MI3/crf12345AndLab123MI3_640_fp16.engine"
 warmup: True
 init_image_path: "../../datasets/carObj1/test_primesense/000001/rgb/000008.png" # Path to an image used for the ONNX/TensorRT model warm-up. It can be any random image of the same dimensions with the model input (i.e. 640 x 480 or 1280 x 720).
 model3D_path: "../../datasets/carObj1/models_cad/obj_000001.ply"

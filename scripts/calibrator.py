@@ -12,11 +12,14 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--calib_dataset_loc",required=True,type=str)
 parser.add_argument("--saveCache",required=True,type=str)
 parser.add_argument("--onnx",required=True,type=str)
+parser.add_argument("--img_size", required=True, nargs='+', type=int)
+parser.add_argument("--num_samples",default=300,type=int)
+parser.add_argument("--batch_size",default=64,type=int)
 args = parser.parse_args()
 
-CHANNEL = 3
-HEIGHT = 720
-WIDTH = 1280
+CHANNEL = args.img_size[2]
+HEIGHT = args.img_size[0]
+WIDTH = args.img_size[1]
 
 
 TRT_LOGGER = trt.Logger()
@@ -55,7 +58,7 @@ class ImageBatchStream():
                        (1 if (len(calibration_files) % batch_size) \
                         else 0)
     self.files = calibration_files
-    self.calibration_data = np.zeros((batch_size, HEIGHT, WIDTH,CHANNEL), \
+    self.calibration_data = np.zeros((batch_size, HEIGHT, WIDTH, CHANNEL), \
                                      dtype=np.float32)
     self.batch = 0
 
@@ -77,26 +80,32 @@ class ImageBatchStream():
         print("[ImageBatchStream] Processing ", f)
         img = ImageBatchStream.read_image_chw(f)
         imgs.append(img)
+        #import pdb; pdb.set_trace()
       for i in range(len(imgs)):
         self.calibration_data[i] = imgs[i]
       self.batch += 1
       return np.ascontiguousarray(self.calibration_data, dtype=np.float32)
     else:
       return np.array([])
-def create_calibration_dataset(dataset_loc):
+    
+def create_calibration_dataset(dataset_loc, num_samples):
   # Create list of calibration images 
-  # This sample code picks 300 images at random for each object
+  # This sample code picks n images at random for each object
   sampled_images = []
   for scene in os.listdir(dataset_loc):
     #00001,00002
     images = glob.glob(os.path.join(dataset_loc,scene)+"/rgb/*.png")
-    print(os.path.join(dataset_loc,scene))
+    #print(os.path.join(dataset_loc,scene))
     shuffle(images)
-    sampled_images.extend(images[:300])
+    sampled_images.extend(images[:num_samples])
 
   return sampled_images
 
 if __name__ == "__main__":
+
+  print('Calibration image size:', args.img_size)
+  print('Number of samples that will be selected for every object:', args.num_samples)
+  print('Number of samples that will be processed in every iteration (batch size):', args.batch_size)
 
   builder = trt.Builder(TRT_LOGGER)
   network = builder.create_network(1 << int(trt.NetworkDefinitionCreationFlag.EXPLICIT_BATCH))
@@ -108,13 +117,13 @@ if __name__ == "__main__":
     parser.parse(model.read())
   print('Completed parsing of ONNX file')
 
-  calibration_files = create_calibration_dataset(args.calib_dataset_loc)
-  print(calibration_files)
+  calibration_files = create_calibration_dataset(args.calib_dataset_loc, args.num_samples)
+  print('Num of calibration files:', len(calibration_files))
   config = builder.create_builder_config()
 
-  # Process 5 images at a time for calibration
+  # Process batch_size images at a time for calibration
   # This batch size can be different from MaxBatchSize (1 in this example)
-  batchstream = ImageBatchStream(64, calibration_files)
+  batchstream = ImageBatchStream(args.batch_size, calibration_files) # was 64
   Int8_calibrator = PythonEntropyCalibrator(batchstream,args.saveCache)
   
   config.set_flag(trt.BuilderFlag.INT8)

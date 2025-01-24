@@ -1,8 +1,8 @@
 # i6DL-Edge-Lite
 
 ROS-independent version of [i6DL-Edge](https://github.com/POSE-Lab/i6DL-Edge). The code was tested on Ubuntu 20.04, with GCC/G++ 9.4.0. The module can run:
-- On x86_64 architectures (typical desktop PCs), either in a conda environment (section Installation) or a Docker environment (section Dockers)
-- on ARM/aarch64 architectures, in a Docker environment.
+- On **x86_64** architectures (typical desktop PCs), either in a **conda** environment (section Installation) or a **Docker** environment (section Dockers)
+- on **ARM/aarch64** architectures, in a Docker environment.
 
 ## Prerequisites
 - CUDA >= 11.6
@@ -12,7 +12,7 @@ ROS-independent version of [i6DL-Edge](https://github.com/POSE-Lab/i6DL-Edge). T
 
 ## Installation
 
-Steps 2-5 only apply when running the module on a **conda** environment.
+Steps 2-5 only apply when running the module in a **conda** environment.
 
 ### 1. Clone the environment and include submodules:
 
@@ -70,7 +70,7 @@ export LD_LIBRARY_PATH=$REPO_PATH/external/llvm/lib:$LD_LIBRARY_PATH
 ### 6. Download and setup the directories
 
 - Download any trained model from this [folder](https://ntuagr-my.sharepoint.com/:f:/g/personal/psapoutzoglou_ntua_gr/EnRqn_GBhJpKj_DOiuSLYlMBqtT8M2_HYY2hDAvcyyYdng?e=3wRcPN), unzip it and place it under the ```$STORE_PATH``` directory
-- Download any dataset from the ```datasets``` [folder](https://ntuagr-my.sharepoint.com/:f:/g/personal/psapoutzoglou_ntua_gr/ElH4q1jy60pApZIKXSS33PYBO34GMvJOVg_x81g58ZzPbA?e=f3G6TX) and place it under the ```$BOP_PATH``` directory.
+- Download any dataset from the ```datasets``` [folder](https://ntuagr-my.sharepoint.com/:f:/g/personal/psapoutzoglou_ntua_gr/ElH4q1jy60pApZIKXSS33PYBO34GMvJOVg_x81g58ZzPbA?e=f3G6TX) and place it under the ```$BOP_PATH``` directory. Datasets follow the [BOP format](https://github.com/thodan/bop_toolkit/blob/master/docs/bop_datasets_format.md).
 - Make a copy of the ```./config.yml``` file named e.g. `config_mine.yml` and adjust it accordingly (check the template `config.yml` for details).
 
 ## Usage 
@@ -95,7 +95,7 @@ python infer.py --imagePath=../../datasets/carObj1/test_primesense/000001/rgb/ -
 ### Evaluation
 
 ```
-python eval.py --config /path/to/config_file --gtPoses='/path/to/bop dataset/scene_gt.json' --estPoses='/path/to/evaluation_results/est_poses.json'
+python eval.py --config /path/to/config_file --gtPoses='/path/to/bop_dataset/scene_gt.json' --estPoses='/path/to/evaluation_results/est_poses.json'
 ```
 e.g. 
 
@@ -114,7 +114,7 @@ e.g.
 python vis.py  --objID=1  --images='../../datasets/carObj1/test_primesense/000001/rgb'  --poses='./eval/est_poses.json'  --confs='./eval/confs.txt'
 ```
 ## [TensorRT](https://docs.nvidia.com/deeplearning/tensorrt/quick-start-guide/index.html) inference
-A TensorRT model, or engine (also called a plan) is optimized in a way that is heavily dependent on the underlying hardware. As a result, a TensorRT model is generally not portable across different GPU architectures. For this reason, we do not provide built TensorRT models. Instead, one should build the model themselves from the provided ONNX model using `trtexec`. 
+A TensorRT model, or engine (also called a plan) is optimized in a way that is heavily dependent on the underlying hardware. As a result, a TensorRT model is generally not portable across different GPU architectures. For this reason, we do not provide built TensorRT models. Instead, one should build the model (engine) themselves from the provided ONNX model using `trtexec`. 
 
 ### FP16 and FP32 engine
 Run 
@@ -126,7 +126,32 @@ Run
 where `precision` = `fp16` or `fp32`
 
 ### INT8 engine
+To create an INT8 engine, the pre-trained model (ONNX in this case) needs to be calibrated on a subset of the training data. After calibration, a cache file is generated, which will be used to generate the INT8 engine.
 
+- Run the calibration script:
+```
+python calibrator.py --calib_dataset_loc /path/to/bop_dataset/train_folder --saveCache /output/cache/filename (calibration file) --onnx /path/to/onnx/model --img_size height width channels --num_samples num_samples --batch_size batch_size 
+```
+Where
+
+`img_size`: image size of calibration images
+
+`num_samples`: Number of samples that will be randomly selected for every object (default: 300)
+
+`batch size`: Number of samples that will be processed in every iteration (batch size) (default: 64)
+
+e.g.
+
+```
+python calibrator.py --calib_dataset_loc /home/i6DL-Edge-Lite/store/train_primesense --saveCache /home/i6DL-Edge-Lite/store/crf12345AndLab123MI3/crf12345AndLab123MI3_640_int8.cache --onnx /home/i6DL-Edge-Lite/store/crf12345AndLab123MI3/crf12345AndLab123MI3_640.onnx --img_size 480 640 3 --num_samples 100 --batch_size 4
+```
+
+- Build the engine:
+```
+/usr/src/tensorrt/bin/trtexec --onnx=/path/to/onnx/model --saveEngine=path/to/output/engine --int8 --calib=/path/to/calib/cache
+```
+### Inference
+In the YAML configuration file, change the `method` field to `trt`, and the `trt` field to the path of the TensorRT engine you created. Run inference as described in Usage.
 
 ## Dockers
 The repo contains Dockerfiles for building Docker images containing all the required components to run i6DL-Edge-Lite for two architectures (x86_64, arm/aarch64). For inference with TensorRT and Dockers, it is recommended to build the TensorRT models **inside** the container, as the host environment will likely differ from the Docker environment (see section TensorRT inference).
@@ -177,8 +202,8 @@ echo \
 ### Instructions
 1. If not already done, setup the directories as described in **[Installation - step 6](https://github.com/POSE-Lab/i6DL-Edge-Lite/?tab=readme-ov-file#6-download-and-setup-the-directories)**.
 2. Change to the `docker` directory
-2. Build the images: run the `build_all.sh` script. Give as arguments the desired image tag (e.g. `latest`) and the CPU architecture (i.e. "x86" or "arm") for which you wish to build the Docker images (e.g `./build_all.sh latest x86`). 
-3. Run `run_container.sh` with the following key-value arguments: 
+3. Build the images: run the `build_all.sh` script. Give as arguments the desired image tag (e.g. `latest`) and the CPU architecture (i.e. "x86" or "arm") for which you wish to build the Docker images (e.g `./build_all.sh latest x86`). 
+4. Run `run_container.sh` with the following key-value arguments: 
 ```
   IMAGE: A valid docker image name
   TAG: Docker image tag
@@ -187,11 +212,11 @@ echo \
   EVAL_RES: Absolute path to folder for storing evaluation results after the container's deletion. Maps to /home/i6DL-Edge-Lite/scripts/eval in the container.
 
 ```
-  For this particular script **only**, the order of the arguments is irrelevant. The folders defined by `$STORE_PATH`, `$BOP_PATH` , `$EVAL_RES` and the `scripts` folder will be mounted on the container on runtime from the host as bind mounts so the contents can be accessed from both the host and the container. 
+  For this particular script **only**, the order of the arguments is irrelevant. The folders defined by `$STORE_PATH`, `$BOP_PATH` , `$EVAL_RES`, and the `scripts` folder will be mounted on the container on runtime from the host as bind mounts so the contents can be accessed from both the host and the container. 
 
-4. Within the container, `cd /home/i6DL-Edge-Lite/scripts`
-5. Change the YAML configuration file so that any paths refer to directories *in the container* (typically beginning with `/home/i6DL-Edge-Lite/`). 
-6. From here follow the instructions in **Usage** (Visualization is not supported!)
+5. Within the container, `cd /home/i6DL-Edge-Lite/scripts`
+6. Change the YAML configuration file so that any paths refer to directories *in the container* (typically beginning with `/home/i6DL-Edge-Lite/`). 
+7. From here follow the instructions in **Usage** (Visualization is not supported!)
 
 ## Troubleshooting:
   - `Could NOT find CUDA: Found unsuitable version "", but required is exact

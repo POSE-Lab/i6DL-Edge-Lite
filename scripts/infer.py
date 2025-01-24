@@ -18,6 +18,7 @@ flags.DEFINE_integer('objID',1,'Object id to localize')
 def main(args):
 
     # load configuration file
+    CONSOLE.log("Loading configuration from "+FLAGS.config)
     config = load_config(FLAGS.config)
     create_directory(config["eval_path"])
 

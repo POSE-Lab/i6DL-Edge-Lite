@@ -51,7 +51,7 @@ class EposModel:
         self.profiler.addTrackItem(self.method+"_warmup")
         self.profiler.start(self.method+"_warmup")
         
-        # initilize the selected method
+        # initialize the selected method
         if self.method == 'trt':
             
             self.trtEngine = TRT_engine(self.trt,input_tensor_name,self.profiler)
@@ -66,7 +66,7 @@ class EposModel:
         # load the dummy image 
         dummy_image = load_image(self.init_image_path)
 
-        print("Warming up..")
+        print("Warming up...")
 
         for _ in range(steps):
 
