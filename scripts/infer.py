@@ -20,6 +20,7 @@ def main(args):
     # load configuration file
     CONSOLE.log("Loading configuration from "+FLAGS.config)
     config = load_config(FLAGS.config)
+    method = config["method"]
     create_directory(config["eval_path"])
 
     # initialize epos model
@@ -51,7 +52,8 @@ def main(args):
             poses+=pred[0]
             timings.append(pred[-1]['total'])
 
-        epos_model.trtEngine.cfx.pop() # to prevent PyCUDA ERROR: The context stack was not empty upon module cleanup.
+        if method == 'trt':
+            epos_model.trtEngine.cfx.pop() # to prevent PyCUDA ERROR: The context stack was not empty upon module cleanup.
         
     CONSOLE.log(f"[:party:]Done inference. Mean time: {np.array(timings).mean()}")
 

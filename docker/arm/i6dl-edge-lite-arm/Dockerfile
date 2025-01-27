@@ -40,3 +40,9 @@ cmake .. -DCMAKE_BUILD_TYPE=Release &&\
 make -j${CPU_CORES}
 
 RUN pip install matplotlib rich tqdm plyfile
+RUN apt-get install cuda-nvcc-11-4
+ENV LD_LIBRARY_PATH="/usr/local/cuda/lib64:${LD_LIBRARY_PATH}"
+ENV PATH=/usr/local/cuda-11.4/bin:$PATH
+RUN pip3 install pycuda --verbose
+RUN echo "deb https://repo.download.nvidia.com/jetson/common r35.2 main" >> /etc/apt/sources.list && \
+apt-get update && apt-get -y install python3-libnvinfer-dev libnvinfer-bin

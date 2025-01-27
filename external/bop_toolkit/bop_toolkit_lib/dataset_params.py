@@ -44,6 +44,11 @@ def get_camera_params(datasets_path, dataset_name, cam_type=None):
       cam_type = 'primesense'
     cam_filename = 'camera_{}.json'.format(cam_type)
 
+  elif dataset_name == 'IndustryShapes':
+    if cam_type is None:
+      cam_type = 'primesense'
+    cam_filename = 'camera_{}.json'.format(cam_type)
+
   elif dataset_name == 'tless':
     # Includes images captured by three sensors. Use Primesense as default.
     if cam_type is None:
@@ -96,6 +101,7 @@ def get_model_params(datasets_path, dataset_name, model_type=None):
     'spreader':[1],
     'carObj1': [1,2],
     'carObj13': [13],
+    'IndustryShapes':[1,2,3,4,5],
     'lm': list(range(1, 16)),
     'lmo': [1, 5, 6, 8, 9, 10, 11, 12],
     'tless': [1], # list(range(1, 31)),
@@ -116,6 +122,7 @@ def get_model_params(datasets_path, dataset_name, model_type=None):
     'spreader':[1],
     'carObj1': [1,2],
     'carObj13': [13],  # list(range(1, 3)),
+    'IndustryShapes':[1,2,3,4,5],
     'lm': [3, 7, 10, 11],
     'lmo': [10, 11],
     'tless': list(range(1, 31)),
@@ -139,6 +146,9 @@ def get_model_params(datasets_path, dataset_name, model_type=None):
     model_type = 'cad'
 
   if dataset_name =='carObj13' and model_type is None:
+    model_type = 'cad'
+
+  if dataset_name =='IndustryShapes' and model_type is None:
     model_type = 'cad'
     
   if dataset_name == 'tless' and model_type is None:
@@ -264,16 +274,22 @@ def get_split_params(datasets_path, dataset_name, split, split_type=None):
     elif split == 'test':
       p['scene_ids'] = [13]#list(range(1, 21)) # TODO car
 
+  elif dataset_name == 'IndustryShapes':
+    if split == 'train':
+      p['scene_ids'] = list(range(1,12)) #list(range(1, 3)) # TODO car
+    elif split == 'test':
+      p['scene_ids'] = list(range(1,9))#list(range(1, 21)) # TODO car
+
     # Use images from the Primesense sensor by default.
     if split_type is None:
       split_type = 'primesense'
 
     p['im_size'] = {
       'train': {
-        'primesense': (1280, 720) # TODO car resolution
+        'primesense': (640, 480) # TODO car resolution
       },
       'test': {
-        'primesense': (1280, 720) # TODO car resolution
+        'primesense': (640, 480) # TODO car resolution
       }
     }[split][split_type]
 

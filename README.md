@@ -151,7 +151,7 @@ python calibrator.py --calib_dataset_loc /home/i6DL-Edge-Lite/store/train_primes
 /usr/src/tensorrt/bin/trtexec --onnx=/path/to/onnx/model --saveEngine=path/to/output/engine --int8 --calib=/path/to/calib/cache
 ```
 ### Inference
-In the YAML configuration file, change the `method` field to `trt`, and the `trt` field to the path of the TensorRT engine you created. Run inference as described in Usage.
+In the YAML configuration file, change the `method` field to `trt`, and the `trt` field to the path of the TensorRT engine you created. Run inference as described in [Usage](#usage).
 
 ## <a name="Dockers"></a> Dockers
 The repo contains Dockerfiles for building Docker images containing all the required components to run i6DL-Edge-Lite for two architectures (x86_64, arm/aarch64). For inference with TensorRT and Dockers, it is recommended to build the TensorRT models **inside** the container, as the host environment will likely differ from the Docker environment (see section [TensorRT inference](#tensorrt)).
@@ -200,7 +200,7 @@ echo \
 
 
 ### Instructions
-1. If not already done, setup the directories as described in **[Installation - step 6](https://github.com/POSE-Lab/i6DL-Edge-Lite/?tab=readme-ov-file#6-download-and-setup-the-directories)**.
+1. If not already done, setup the directories as described in [Installation - step 6](#6-download-and-setup-the-directories).
 2. Change to the `docker` directory
 3. Build the images: run the `build_all.sh` script. Give as arguments the desired image tag (e.g. `latest`) and the CPU architecture (i.e. "x86" or "arm") for which you wish to build the Docker images (e.g `./build_all.sh latest x86`). 
 4. Run `run_container.sh` with the following key-value arguments: 
