@@ -23,7 +23,8 @@ RUN cd libigl-python-bindings && python3 -m pip install ./
 RUN apt update -y && apt install -y python-is-python3
 ENV REPO_PATH_SRC=.
 ENV REPO_PATH=/home/i6DL-Edge-Lite
-COPY $REPO_PATH_SRC $REPO_PATH
+COPY ${REPO_PATH_SRC}/epos_lib ${REPO_PATH}/epos_lib
+COPY ${REPO_PATH_SRC}/external ${REPO_PATH}/external
 ENV PYTHONPATH=$REPO_PATH:$PYTHONPATH
 ENV PYTHONPATH=$REPO_PATH/external/bop_toolkit:$PYTHONPATH
 ENV PYTHONPATH=$REPO_PATH/external/progressive-x/build:$PYTHONPATH
