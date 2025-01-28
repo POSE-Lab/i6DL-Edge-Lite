@@ -1,6 +1,6 @@
 # i6DL-Edge-Lite
 
-ROS-independent version of [i6DL-Edge](https://github.com/POSE-Lab/i6DL-Edge). The module adapts the [EPOS (Estimating 6D Pose of Objects with Symmetries)](https://github.com/thodan/epos) method for deployment on edge devices. The module can run:
+ROS-independent version of [i6DL-Edge](https://github.com/POSE-Lab/i6DL-Edge). The module uses as baseline method the [EPOS](https://github.com/thodan/epos) (Estimating 6D Pose of Objects with Symmetries) method, integrating optimizations for improved time performance and support for deployment in Docker containers. The module can run:
 - On **x86_64** architectures (typical desktop PCs), either in a **conda** environment (section [Installation](#install)) or a **Docker** environment (section [Dockers](#Dockers))
 - on **ARM/aarch64** architectures, in a Docker environment.
 
