@@ -1,10 +1,16 @@
 # i6DL-Edge-Lite
 
-ROS-independent version of [i6DL-Edge](https://github.com/POSE-Lab/i6DL-Edge). The code was tested on Ubuntu 20.04, with GCC/G++ 9.4.0. The module can run:
+ROS-independent version of [i6DL-Edge](https://github.com/POSE-Lab/i6DL-Edge). The module adapts the [EPOS (Estimating 6D Pose of Objects with Symmetries)](https://github.com/thodan/epos) method for deployment on edge devices. The module can run:
 - On **x86_64** architectures (typical desktop PCs), either in a **conda** environment (section [Installation](#install)) or a **Docker** environment (section [Dockers](#Dockers))
 - on **ARM/aarch64** architectures, in a Docker environment.
 
+## Test environment
+- x86_64: Ubuntu 20.04, with GCC/G++ 9.4.0
+- ARM: Linux orin 5.10.104-tegra (equivalent of Ubuntu 20.04 for NVIDIA Jetson Orin platforms)
+
 ## Prerequisites
+This section only applies when running in a **conda** environment.
+
 - CUDA >= 11.6
 - glog headers (`sudo apt-get install libgoogle-glog-dev`)
 - libopencv-dev (`sudo apt-get install libopencv-dev`)
@@ -79,7 +85,9 @@ Run the inference, evaluation, visualization scripts from within the `scripts` f
 
 ### Inference
 
-Inference on a test dataset is supported 1) for the ONNX inference engine, using the trained model we provide (see [Installation - step 6](#step6)) 2) for the TensorRT inference engine. For the latter, see section [TensorRT inference](#tensorrt).
+Inference on a test dataset is supported
+- for the ONNX inference engine, using the trained model we provide (see [Installation - step 6](#step6))
+- for the TensorRT inference engine (see [TensorRT inference](#tensorrt)).
 
 For either method, run the inference as follows: 
 
@@ -89,7 +97,7 @@ python infer.py --imagePath='/path/to/test_images' --config=/path/to/config_file
 e.g.
 
 ```
-python infer.py --imagePath=../../datasets/carObj1/test_primesense/000001/rgb/ --config=./config_mine.yml  --objID=1
+python infer.py --imagePath=../../datasets/IndustryShapes/test_primesense/000001/rgb/ --config=./config_mine.yml  --objID=1
 ```
 
 ### Evaluation
@@ -100,18 +108,18 @@ python eval.py --config /path/to/config_file --gtPoses='/path/to/bop_dataset/sce
 e.g. 
 
 ```
-python eval.py --config ./config_mine.yml --gtPoses='../../datasets/carObj1/test_primesense/000001/scene_gt.json' --estPoses='./eval/est_poses.json'
+python eval.py --config ./config_mine.yml --gtPoses='../../datasets/IndustryShapes/test_primesense/000001/scene_gt.json' --estPoses='./eval/est_poses.json'
 ```
 
 ### Visualization of estimated poses
-
+Visualization is currently only supported on **x86** systems, in a **conda** environment and not Docker. There is ongoing work for supporting visualization on ARM systems too.
 ```
 python vis.py  --objID=<object ID>  --images='/path/to/test_images'  --poses='./path/to/evaluation_results/est_poses.json'  --confs='./path/to/evaluation_results/confs.txt'
 ```
 e.g. 
 
 ```
-python vis.py  --objID=1  --images='../../datasets/carObj1/test_primesense/000001/rgb'  --poses='./eval/est_poses.json'  --confs='./eval/confs.txt'
+python vis.py  --objID=1  --images='../../datasets/IndustryShapes/test_primesense/000001/rgb'  --poses='./eval/est_poses.json'  --confs='./eval/confs.txt'
 ```
 ## <a name="tensorrt"></a> [TensorRT](https://docs.nvidia.com/deeplearning/tensorrt/quick-start-guide/index.html) inference
 A TensorRT model, or engine (also called a plan) is optimized in a way that is heavily dependent on the underlying hardware. As a result, a TensorRT model is generally not portable across different GPU architectures. For this reason, we do not provide built TensorRT models. Instead, one should build the model (engine) themselves from the provided ONNX model using `trtexec`. 

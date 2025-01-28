@@ -122,7 +122,7 @@ def get_model_params(datasets_path, dataset_name, model_type=None):
     'spreader':[1],
     'carObj1': [1,2],
     'carObj13': [13],  # list(range(1, 3)),
-    'IndustryShapes':[1,2,3,4,5],
+    'IndustryShapes':[1,3,5],
     'lm': [3, 7, 10, 11],
     'lmo': [10, 11],
     'tless': list(range(1, 31)),
