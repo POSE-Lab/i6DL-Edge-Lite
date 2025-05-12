@@ -1,6 +1,6 @@
 
 input_tensor_name: "rgb_image_input:0"
-method: 'onnx' # or `trt` for running TensorRT inference 
+method: 'onnx' # 'onnx' or 'trt' for running TensorRT inference 
 onnx: "../../store/crf12345AndLab123MI3_640/crf12345AndLab123MI3_640.onnx"
 trt: "../../store/crf12345AndLab123MI3/crf12345AndLab123MI3_640_fp16.engine"
 warmup: True
@@ -9,7 +9,7 @@ model3D_path: "../../datasets/carObj1/models_cad/obj_000001.ply"
 K: [423.873027, 0.000000, 318.680359, 0.000000, 423.074667, 242.974976, 0.000000, 0.000000, 1.000000]
 
 # EPOS related flags
-dataset: "carObj1"
+dataset: "IndustryShapes"
 task_type: 'localization'
 decoder_output_stride: [4]
 num_frags: 64

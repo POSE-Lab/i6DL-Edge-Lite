@@ -36,6 +36,7 @@ def main(args):
     # load 3D model
     print('Loading 3D model from', config['model3D_path'])
     points,_ = load3DModel(config['model3D_path'])
+    print("Calculating object diameter...")
     object_diameter_ = calc_pts_diameter(points)
     print("Diameter:", object_diameter_)
     adds = []

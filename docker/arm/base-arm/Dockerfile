@@ -42,7 +42,7 @@ RUN cd ./tmp && \
     git checkout tags/$OPENCV_VERSION &&\
     cd ../opencv_fork
 RUN     mkdir -p /tmp/opencv_fork/build && \
-        cd /tmp/opencv/build && \
+        cd /tmp/opencv_fork/build && \
          cmake \
         -D CMAKE_INSTALL_PREFIX=/usr/local \
           -D BUILD_TIFF=ON \
@@ -94,6 +94,6 @@ RUN     mkdir -p /tmp/opencv_fork/build && \
           -D CMAKE_BUILD_TYPE=Release \
           -D OPENCV_EXTRA_MODULES_PATH=/tmp/opencv_contrib/modules .. &&\
     	    make -j${CPU_CORES} install &&\
-   	   rm -r /tmp/opencv && \
+   	   rm -r /tmp/opencv_fork && \
     	 rm -r /tmp/opencv_contrib
 
