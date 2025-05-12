@@ -218,6 +218,9 @@ echo \
 6. Change the YAML configuration file so that any paths refer to directories *in the container* (typically beginning with `/home/i6DL-Edge-Lite/`). 
 7. From here follow the instructions in **Usage** (Visualization is not supported!)
 
+## Training
+We refer the reader to [EPOS](https://github.com/thodan/epos).
+
 ## Troubleshooting:
   - `Could NOT find CUDA: Found unsuitable version "", but required is exact
   version "11.6" (found /usr)` when building ProgressiveX outside Docker: try specifying the CUDA toolkit location in cmake configuration (`-D CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda`)
